@@ -1,0 +1,44 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: testapi-PROJECTVESRION-gateway
+spec:
+  selector:
+    istio: ingressgateway 
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "testapi-PROJECTVESRION.jetshark.com"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: testapi-PROJECTVESRION
+spec:
+  host: testapi
+  subsets:
+  - name: PROJECTVESRION
+    labels:
+      version: PROJECTVESRION
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: testapi-PROJECTVESRION
+spec:
+  hosts:
+  - "testapi-PROJECTVESRION.jetshark.com"
+  - testapi-PROJECTVESRION
+  gateways:
+  - testapi-PROJECTVESRION-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: testapi
+        subset: PROJECTVESRION

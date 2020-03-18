@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testapi-PROJECTVESRION
+  namespace: default
+  labels:
+    version: PROJECTVESRION
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: testapi
+  template:
+    metadata:
+      labels:
+        app: testapi
+        version: PROJECTVESRION
+    spec:
+      containers:
+      - name: testapi
+        image: DOCKERIMAGENAME
+        resources:
+          requests:
+            memory: '64Mi'
+            cpu: '100m'
+          limits:
+            memory: '1Gi'
+            cpu: '1'
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 15
+          failureThreshold: 6
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 120
